@@ -718,10 +718,7 @@
 }
 
 - (BOOL) loadHrefIfPassed:(NSString*) href {
-  UIWebView *uiwebview = nil;
-  if ([self.webView isKindOfClass:[UIWebView class]]) {
-    uiwebview = ((UIWebView*)self.webView);
-  }
+
   if (href != nil && ![href isEqual:[NSNull null]]) {
     if (![href hasPrefix:@"#"]) {
       // strip any params when looking for the file on the filesystem
@@ -737,8 +734,6 @@
         NSURL *origUrl;
       if (self.wkWebView != nil) {
           origUrl = self.wkWebView.URL;
-      } else {
-          origUrl = uiwebview.request.URL;
       }
         if([origUrl.scheme isEqualToString:@"file"]) {
             NSString *currentUrl = origUrl.absoluteString;
@@ -764,8 +759,6 @@
       // Utilize WKWebView for request if it exists
       if (self.wkWebView != nil) {
         [self.wkWebView loadRequest: urlRequest];
-      } else {
-        [uiwebview loadRequest: urlRequest];
       }
     } else if (![href hasPrefix:@"#"]) {
       CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"href must be null, a .html file or a #navigationhash"];
@@ -776,9 +769,7 @@
       NSString *url = nil;
       if (self.wkWebView != nil) {
         url = self.wkWebView.URL.absoluteString;
-      } else {
-        url = uiwebview.request.URL.absoluteString;
-      }
+      } 
 
       // remove the # if it's still there
       if ([url rangeOfString:@"#"].location != NSNotFound) {
@@ -792,8 +783,6 @@
 
       if (self.wkWebView != nil) {
         [self.wkWebView loadRequest: urlRequest];
-      } else {
-        [uiwebview loadRequest: urlRequest];
       }
     }
   }
